@@ -1,0 +1,17 @@
+Link: https://codeforces.com/problemset/problem/375/D
+Brief summary: Count number of elements that occur >= k times in v's subtree
+Comment: Can be solved using MO's algo, because of incrementing cnt[color] one by one we can keep track of prefix sums
+But instead of MO's we can count something for every subtree by adding and deleting each subtree except the largest one
+Something like:
+dfs_solve(v):
+  for i in childs[v]:
+    if(i != max_child):
+        dfs_solve(i)
+        dfs_remove(i)
+  dfs_solve(max_child)
+  for i in childs[v]:
+    if(i != max_child):
+      dfs_add(i)
+  add(v)
+
+This works because by traversing edge that connects parent and non-max child size of tree doubles, so each vertex gets deleted at most logn times.
