@@ -1,0 +1,5 @@
+The trick to answer queries online:
+Create mask[nmax] and do for(int i = m; i < r; i++) mask[i] ^= (1 << depth);
+That way, when you need to know the depth for query (l, r), you can look at mask[l] ^ mask[r] and take the lsb.
+Works because for the first d depths both l and r lie in the same range, so both mask[l] and mask[r] have the same bit.
+But the first depth when l and r are in some different range mask[r] is going to become 1, while mask[l] is going to be 0.
