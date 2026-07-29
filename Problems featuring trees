@@ -15,3 +15,9 @@ dfs_solve(v):
   add(v)
 
 This works because by traversing edge that connects parent and non-max child size of tree doubles, so each vertex gets deleted at most logn times.
+
+Link: https://codeforces.com/contest/1254/problem/D
+Brief summary: Idk just read the statement
+Comment: Seems like there is a lot of ways to solve this problem, but I solved it using batching on queries.
+Even though relaxing $block$ updates works in linear time with just 1 dfs, and query takes $block$ binary searched on childen of some vertex, the optimal $block$ turned out to be > $sqrt(n)$.
+Recursive dfs is too slow to rely on it. Flattening the graf sped up things by a lot. With turning dfs into a pass on an array, optimal block shifted closer to $sqrt(n)$.
