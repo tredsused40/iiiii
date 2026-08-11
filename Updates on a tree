@@ -1,1 +1,16 @@
-Problem 1: Add to a subtree, query vertex
+All these problems are working with vertices. If edges are needed, just move edge weights to their lower vertices.
+
+Problem 1: Add to a vertex, query path from root
+Solution: Create Euler Tour, add to tin[v] and subtract from tout[v], query is a prefix sum.
+
+Problem 2: Add to a subtree, query vertex
+Solution: Exactly the same as problem 1. Model it as we want to know how much was added to the vertices on a path to root.
+
+Problem 3: Add to a vertex, query subtree
+Solution: Add to tin[v], query [tin[u], tout[u])
+
+Problem 4: Add to a path from root, query vertex
+Solution: Exactly the same as problem 3. Model it as we want to know total sum of paths ending in a subtree.
+
+Problem 5: Add to a path, query vergex
+Solution: Decompose path into + root -> u, + root -> v, - root -> lca, - root -> (lca - 1). Now it's problem 4.
