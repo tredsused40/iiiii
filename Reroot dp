@@ -1,0 +1,15 @@
+Calculate everything for each subtree first.(sub[v])
+Then calculate the parent edge using parent edge of parent and subtree of parent.(up[v])
+
+Examples:
+
+Problem: Min dist to a white node for each node
+Solution: Answer for each subtree is trivial, but we store first and second minimums.
+Parent edge is either parent edge of parent + 1, or first/second minimum of parent + 1.
+
+Problem: Sum of path lengths from each vertex
+Solution: For each subtree we sum children and add their subtree size
+Parent edge has two components: parent edge of parent, and for each path like that we add 1, and children of parent except current child.
+up[v] = (up[pr] + (up_size of parent)) + (sub[pr] - (sub[v] + sz[v]) + (sz[pr] - sz[v])) =
+= up[pr] + (up_size of pr) + sub[pr] - sub[v] - sz[v] + sz[pr] - sz[v].
+up_size of pr and sz[pr] is exactly n, so the final formula is up[pr] + sub[pr] - sub[v] + n - 2 * sz[v]
