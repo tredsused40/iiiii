@@ -1,0 +1,9 @@
+Problem 1: a_i = sum of j in [1..k] of b_j * a_(i - j). Find a_n(n is big).
+Solution: Let state_i be vector of [a_(i - k + 1), ..., a_i]. Construct matrix T of size k * k such that state_i * T = state_(i + 1).
+Use matrix exponentiation on T to compute state_n = state_0 * T^n.
+
+Problem 2: The same as Problem 1 but there's also + constant.
+Solution: Just modify the state and matrix(for this one add constact into the state, and modify matrix accordingly).
+
+Problem 3: The same as Problem 1 but there are multiple sequences that rely on each other.
+Solution: The same as problem 2.
