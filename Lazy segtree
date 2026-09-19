@@ -1,0 +1,116 @@
+Definition of lazy[v]: Value that is to be pushed down to children, it is already applied on v.
+Definition of push(v): Modify lazy[child] and tree[child] with lazy[v], set lazy[v] to 0.
+Definition of apply(v, val): Modifies lazy[v] and child[v] by given val = lazy[u].
+
+General structure:
+
+createnode(val)
+mergenodes(node1, node2)
+apply(v, val)
+
+push()
+   apply(c1, lazy[v])
+   apply(c2, lazy[v])
+   lazy[v]=0
+
+upd(x):
+    if(bad_node) return;
+    if(good_node) apply(v, x) return;
+    push(v)
+    upd...
+
+query():
+    if(bad_node) return;
+    if(good_node) return ans;
+    push(v, x)
+    query...
+
+
+Example:
+https://codeforces.com/problemset/problem/242/E
+
+struct node {
+    int cnt[20];
+    ll sum = 0;
+};
+
+node tree[nmax * 4];
+int lazy[nmax * 4];
+
+node createnode(const int &x) {
+    node c;
+    c.sum = x;
+    fill(c.cnt, c.cnt + 20, 0);
+    for(int i = 0; i < 20; i++) {
+        if((x >> i) & 1)
+            c.cnt[i]++;
+    }
+    return c;
+}
+
+node sum(const node &a, const node &b) {
+    node c;
+    c.sum = a.sum + b.sum;
+    for(int i = 0; i < 20; i++)
+        c.cnt[i] = a.cnt[i] + b.cnt[i];
+    return c;
+}
+
+void build(int v, int l, int r) {
+    if(l == r) {
+        tree[v] = createnode(a[l]);
+        return ;
+    }
+    int m = l + r >> 1;
+    build(v << 1 | 1, m + 1, r);
+    build(v << 1, l, m);
+    tree[v] = sum(tree[v << 1 | 1], tree[v << 1]);
+    return ;
+}
+
+void apply(int v, int l, int r, int x) {
+    //cout << v << " " << l << " " << r << " apply " << x << "\n";
+    int els = r - l + 1;
+    for(int i = 0; i < 20; i++) {
+        tree[v].sum -= (1ll << i) * tree[v].cnt[i];
+        if((x >> i) & 1)
+            tree[v].cnt[i] = els - tree[v].cnt[i];
+        tree[v].sum += (1ll << i) * tree[v].cnt[i];
+    }
+    lazy[v] ^= x;
+    return ;
+}
+
+void push(int v, int l, int r) {
+    int m = l + r >> 1;
+    apply(v << 1, l, m, lazy[v]);
+    apply(v << 1 | 1, m + 1, r, lazy[v]);
+    lazy[v] = 0;
+    return ;
+}
+
+void upd(int v, int l, int r, int ul, int ur, int x) {
+    if(ul > ur)
+        return ;
+    if(l == ul && r == ur) {
+        apply(v, l, r, x);
+        return ;
+    }
+    push(v, l, r);
+    int m = l + r >> 1;
+    upd(v << 1, l, m, ul, min(ur, m), x);
+    upd(v << 1 | 1, m + 1, r, max(ul, m + 1), ur, x);
+    tree[v] = sum(tree[v << 1], tree[v << 1 | 1]);
+    return ;
+}
+
+ll query(int v, int l, int r, int ql, int qr) {
+    if(ql > qr)
+        return 0;
+    //cout << v << " " << l << " " << r << " " << tree[v].sum << " " << lazy[v] << "\n";
+    if(l == ql && r == qr)
+        return tree[v].sum;
+    push(v, l, r);
+    int m = l + r >> 1;
+    return query(v << 1, l, m, ql, min(qr, m)) + query(v << 1 | 1, m + 1, r, max(ql, m + 1), qr);
+}
