@@ -7,3 +7,5 @@ Solution: Just modify the state and matrix(for this one add constact into the st
 
 Problem 3: The same as Problem 1 but there are multiple sequences that rely on each other.
 Solution: The same as problem 2.
+
+Special case of problem 3: When a_n depends on n represent n as some sequence.
