@@ -1,3 +1,5 @@
+Divide the segments in half, save all the info from m to m-1...l and from m to m+1...r. Answer all the queries that have ql <= m <= qr by combining two values.
+
 The trick to answer queries online:
 Create mask[nmax] and do for(int i = m; i < r; i++) mask[i] ^= (1 << depth);
 That way, when you need to know the depth for query (l, r), you can look at mask[l] ^ mask[r] and take the lsb.
