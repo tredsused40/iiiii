@@ -1,0 +1,62 @@
+vector<int> graf[nmax];
+vector<array<int, 2>> centroids[nmax];
+int sz[nmax];
+bool ban[nmax];
+
+void dfs_sz(int v, int pr = 0) {
+    sz[v] = 1;
+    for(int u : graf[v]) {
+        if(!ban[u] && u != pr) {
+            dfs_sz(u, v);
+            sz[v] += sz[u];
+        }
+    }
+    return ;
+}
+
+int find_centroid(int v, int pr, int tsz) {
+    for(int u : graf[v]) {
+        if(!ban[u] && u != pr && sz[u] * 2 > tsz)
+            return find_centroid(u, v, tsz);
+    }
+    return v;
+}
+
+void insert_centroid(int v, int pr, int c, int d) {
+    centroids[v].pb({c, d});
+    for(int u : graf[v]) {
+        if(!ban[u] && u != pr) {
+            insert_centroid(u, v, c, d + 1);
+        }
+    }
+    return ;
+}
+
+void build(int v) {
+    dfs_sz(v);
+    int c = find_centroid(v, 0, sz[v]);
+    insert_centroid(c, 0, c, 0);
+    ban[c] = 1;
+    for(int u : graf[c]) {
+        if(!ban[u])
+            build(u);
+    }
+    return ;
+}
+
+void upd(int v) {
+    for(auto i : centroids[v]) {
+        int u = i[0];
+        int d = i[1];
+    }
+    return ;
+}
+
+ll query(int v) {
+    ll ans = 0;
+    for(auto i : centroids[v]) {
+        int u = i[0];
+        int d = i[1];
+    }
+    return ans;
+}
