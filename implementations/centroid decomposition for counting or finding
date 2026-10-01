@@ -1,0 +1,76 @@
+
+int sz[nmax];
+map<ll, int> minlen;
+vector<array<int, 2>> graf[nmax];
+int target;
+bool ban[nmax];
+int ans = nmax;
+
+void dfs_sz(int v, int pr) {
+    sz[v] = 1;
+    for(auto e : graf[v]) {
+        int u = e[0];
+        if(!ban[u] && u != pr) {
+            dfs_sz(u, v);
+            sz[v] += sz[u];
+        }
+    }
+    return ;
+}
+
+int csz;
+
+int find_centroid(int v, int pr) {
+    for(auto e : graf[v]) {
+        if(!ban[e[0]] && e[0] != pr && sz[e[0]] * 2 > csz)
+            return find_centroid(e[0], v);
+    }
+    return v;
+}
+
+void insert_subtree(int v, int pr, int depth, ll weight) {
+    if(minlen.count(weight))
+        minlen[weight] = min(minlen[weight], depth);
+    else
+        minlen[weight] = depth;
+    for(auto e : graf[v]) {
+        int u = e[0];
+        int d = e[1];
+        if(!ban[u] && u != pr)
+            insert_subtree(u, v, depth + 1, weight + d);
+    }
+    return ;
+}
+
+void calc_subtree(int v, int pr, int depth, ll weight) {
+    if(minlen.count(target - weight))
+        ans = min(ans, depth + minlen[target - weight]);
+    for(auto e : graf[v]) {
+        int u = e[0];
+        int d = e[1];
+        if(!ban[u] && u != pr)
+            calc_subtree(u, v, depth + 1, weight + d);
+    }
+    return ;
+}
+
+void build(int v) {
+    dfs_sz(v, 0);
+    csz = sz[v];
+    int c = find_centroid(v, 0);
+    minlen[0] = 0;
+    for(auto e : graf[c]) {
+        int u = e[0];
+        if(!ban[u]) {
+            calc_subtree(u, c, 1, e[1]);
+            insert_subtree(u, c, 1, e[1]);
+        }
+    }
+    ban[c] = 1;
+    minlen.clear();
+    for(auto e : graf[c]) {
+        if(!ban[e[0]])
+            build(e[0]);
+    }
+    return ;
+}
