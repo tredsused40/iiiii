@@ -47,7 +47,7 @@ struct Dinitz {
             return flow;
         while(ptr[v] < graf[v].size()) {
             edge &e = graf[v][ptr[v]];
-            if(dist[v] == dist[e.to] - 1 && e.flow < e.cap) {
+            if(!blocked[v] && dist[v] == dist[e.to] - 1 && e.flow < e.cap) {
                 flow_type cand = dfs(e.to, min(flow, e.cap - e.flow));
                 if(cand) {
                     e.flow += cand;
