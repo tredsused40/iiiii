@@ -8,11 +8,9 @@ struct Dinitz {
         flow_type flow = 0;
     };
     vector<vector<edge>> graf;
-    vector<int> dist, blocked, ptr;
+    vector<int> dist, ptr;
     void init(int nn) {
         n = nn;
-        blocked.clear();
-        blocked.resize(n);
         ptr.clear();
         ptr.resize(n);
         dist.clear();
@@ -22,7 +20,7 @@ struct Dinitz {
     }
     void add_edge(int u, int v, flow_type cap) {
         graf[u].pb({v, graf[v].size(), cap, 0});
-        graf[v].pb({u, graf[u].size() - 1, 0, 0});//change reverse edge cap to cap if undirected
+        graf[v].pb({u, graf[u].size() - 1, 0, 0});//change reverse edge capacity to cap if undirected
     }
     void bfs(int s) {
         fill(all(dist), -1);
@@ -47,7 +45,7 @@ struct Dinitz {
             return flow;
         while(ptr[v] < graf[v].size()) {
             edge &e = graf[v][ptr[v]];
-            if(!blocked[v] && dist[v] == dist[e.to] - 1 && e.flow < e.cap) {
+            if(dist[v] == dist[e.to] - 1 && e.flow < e.cap) {
                 flow_type cand = dfs(e.to, min(flow, e.cap - e.flow));
                 if(cand) {
                     e.flow += cand;
@@ -57,7 +55,6 @@ struct Dinitz {
             }
             ptr[v]++;
         }
-        blocked[v] = 1;
         return 0;
     }
     flow_type maxflow(int s, int t) {
@@ -68,7 +65,6 @@ struct Dinitz {
             if(dist[t] == -1)
                 return ans;
             cur_flow = 1;
-            fill(all(blocked), 0);
             fill(all(ptr), 0);
             while(cur_flow) {
                 cur_flow = dfs(s, numeric_limits<flow_type>::max());
