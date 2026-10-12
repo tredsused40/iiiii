@@ -20,7 +20,7 @@ ll query(int l, int r) {
 void upd(int ind, ll val, int n) {
     while(ind <= n) {
         tree[ind] += val;
-        ind += (ind - (ind & (ind - 1)));
+        ind += (ind & -ind);
     }
     return ;
 }
