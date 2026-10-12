@@ -1,4 +1,5 @@
-1-indexed fenwik tree
+//1-indexed fenwick tree
+//indices are 1..n, needs n+1 memory cells
 
 const int nmax = 1000010;
  
