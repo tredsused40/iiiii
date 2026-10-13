@@ -3,22 +3,24 @@
 
 const int nmax = 1000010;
  
-ll tree[nmax];
- 
-ll query(int ind) {
-    ll ans = 0;
+using val_type = int;
+
+val_type tree[nmax];
+
+val_type query(int ind) {
+    val_type ans = 0;
     while(ind > 0) {
         ans += tree[ind];
         ind &= ind - 1;
     }
     return ans;
 }
- 
-ll query(int l, int r) {
+
+val_type query(int l, int r) {
     return query(r) - query(l - 1);
 }
- 
-void upd(int ind, ll val, int n) {
+
+void upd(int ind, val_type val, int n) {
     while(ind <= n) {
         tree[ind] += val;
         ind += (ind & -ind);
