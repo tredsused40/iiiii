@@ -23,7 +23,11 @@ struct dsu {
         e[v] = u;
         return 1;
     }
-
+    
+    int getsz(int u) {
+        return -e[findpr(u)];
+    }
+    
     bool is_connected(int u, int v) {
         return findpr(u) == findpr(v);
     }
