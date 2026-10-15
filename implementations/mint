@@ -11,6 +11,12 @@ struct mint {
             ans -= mod;
         return ans;
     }
+    friend mint operator -(mint a, mint b) {
+        int ans = a.val - b.val;
+        if(ans < 0)
+            ans += mod;
+        return ans;
+    }
     friend mint operator *(mint a, mint b) {
         ll ans = a.val * 1ll * b.val;
         ans %= mod;
