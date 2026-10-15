@@ -1,0 +1,32 @@
+const int mod = 1e9 + 7;
+
+struct mint {
+    int val;
+    mint(int a = 0) {
+        val = (a % mod + mod) % mod;
+    }
+    friend mint operator +(mint a, mint b) {
+        int ans = a.val + b.val;
+        if(ans >= mod)
+            ans -= mod;
+        return ans;
+    }
+    friend mint operator *(mint a, mint b) {
+        ll ans = a.val * 1ll * b.val;
+        ans %= mod;
+        return int(ans);
+    }
+    friend mint binpow(mint a, ll p) {
+        mint ans = 1;
+        while(p) {
+            if(p & 1)
+                ans = ans * a;
+            a = a * a;
+            p >>= 1;
+        }
+        return ans;
+    }
+    friend mint operator /(mint a, mint b) {
+        return a * binpow(b, mod - 2);
+    }
+};
