@@ -1,28 +1,30 @@
+struct dsu {
+    vector<int> e;
 
-int e[nmax];
+    void init(int n) {
+        e.clear();
+        e.resize(n + 1, -1);
+    }
 
-void init(int n) {
-    fill(e, e + n + 1, -1);
-}
+    int findpr(int u) {
+        if(e[u] < 0)
+            return u;
+        return e[u] = findpr(e[u]);
+    }
 
-int findpr(int u) {
-    if(e[u] < 0)
-        return u;
-    return e[u] = findpr(e[u]);
-}
+    bool unite(int u, int v) {
+        u = findpr(u);
+        v = findpr(v);
+        if(u == v)
+            return 0;
+        if(e[u] > e[v])
+            swap(u, v);
+        e[u] += e[v];
+        e[v] = u;
+        return 1;
+    }
 
-bool unite(int u, int v) {
-    u = findpr(u);
-    v = findpr(v);
-    if(u == v)
-        return 0;
-    if(e[u] > e[v])
-        swap(u, v);
-    e[u] += e[v];
-    e[v] = u;
-    return 1;
-}
-
-bool is_connected(int u, int v) {
-    return findpr(u) == findpr(v);
-}
+    bool is_connected(int u, int v) {
+        return findpr(u) == findpr(v);
+    }
+};
