@@ -1,0 +1,45 @@
+int timer = 0;
+int tin[nmax];
+int tout[nmax];
+int st[lg][nmax * 2];
+int depth[nmax];
+
+void dfsorder(int v, int pr) {
+    tin[v] = timer;
+    st[0][timer] = v;
+    timer++;
+    for(int u : graf[v]) {
+        if(u != pr) {
+            depth[u] = depth[v] + 1;
+            dfsorder(u, v);
+            st[0][timer] = v;
+            timer++;
+        }
+    }
+    tout[v] = timer;
+    return ;
+}
+
+int stget(int u, int v) {
+    return depth[u] < depth[v] ? u : v;
+}
+
+void buildst() {
+    for(int i = 1; i < lg; i++) {
+        for(int j = 0; j + (1 << i) <= timer; j++) {
+            int u = st[i - 1][j];
+            int v = st[i - 1][j + (1 << (i - 1))];
+            st[i][j] = stget(u, v);
+        }
+    }
+    return ;
+}
+
+int lca(int u, int v) {
+    u = tin[u];
+    v = tin[v];
+    if(u > v)
+        swap(u, v);
+    int d = __lg(v - u + 1);
+    return stget(st[d][u], st[d][v - (1 << d) + 1]);
+}
