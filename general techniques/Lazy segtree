@@ -22,7 +22,7 @@ upd(x):
 query():
     if(bad_node) return;
     if(good_node) return ans;
-    push(v, x)
+    push(v)
     query...
 
 
