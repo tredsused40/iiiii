@@ -1,4 +1,4 @@
-
+//1-indexed centroid decomposition
 int sz[nmax];
 vector<array<int, 2>> graf[nmax];
 int target;
@@ -57,6 +57,7 @@ void build(int v) {
     for(auto e : graf[c]) {
         int u = e[0];
         if(!ban[u]) {
+            //make sure to include current edge into info
             calc_subtree(u, c, info);
             insert_subtree(u, c, info);
         }
