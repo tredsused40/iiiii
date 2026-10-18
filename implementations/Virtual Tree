@@ -1,18 +1,27 @@
-void virtualtree(vector<int> nodes) {
+bool cmp(int u, int v) {
+    return tree.tin[u] < tree.tin[v];
+}
+
+//returns edges in form {vertex, parent} in dfs order
+vector<array<int, 2>> virtualtree(vector<int> nodes) {
     sort(all(nodes), cmp);
     int n = nodes.size();
     for(int i = 1; i < n; i++) {
-        nodes.pb(lca(nodes[i - 1], nodes[i]));
+        nodes.pb(tree.lca(nodes[i - 1], nodes[i]));
     }
     sort(all(nodes), cmp);
     nodes.erase(unique(all(nodes)), nodes.end());
     stack<int> st;
+    vector<array<int, 2>> ans;
     for(int i : nodes) {
         ccnt[i] = 0;
-        while(!st.empty() && tout[st.top()] < tout[i])
+        while(!st.empty() && tree.tout[st.top()] < tree.tout[i])
             st.pop();
+        int cp = -1;
         if(!st.empty())
-            parent[i] = st.top();
+            cp = st.top();
         st.push(i);
+        ans.pb({i, cp});
     }
+    return ans;
 }
