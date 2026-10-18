@@ -1,0 +1,18 @@
+void virtualtree(vector<int> nodes) {
+    sort(all(nodes), cmp);
+    int n = nodes.size();
+    for(int i = 1; i < n; i++) {
+        nodes.pb(lca(nodes[i - 1], nodes[i]));
+    }
+    sort(all(nodes), cmp);
+    nodes.erase(unique(all(nodes)), nodes.end());
+    stack<int> st;
+    for(int i : nodes) {
+        ccnt[i] = 0;
+        while(!st.empty() && tout[st.top()] < tout[i])
+            st.pop();
+        if(!st.empty())
+            parent[i] = st.top();
+        st.push(i);
+    }
+}
