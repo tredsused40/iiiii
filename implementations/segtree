@@ -1,63 +1,78 @@
-int a[nmax];
+struct SegTree {
+    struct node {
+        int mx;
+        bool operator ==(const node &b) const {
+            return (mx == b.mx);
+        }
+    };
+    int n;
+    vector<node> tree;
+    node _0;
  
-struct node {
-    int mn;
-    bool operator ==(const node &b) const {
-        return (mn == b.mn);
+    void init(int n_) {
+        n = n_;
+        tree.clear();
+        tree.resize(4 * n + 2);
+        _0.mx = 0;
+    }
+ 
+    node createnode(const int &x) {
+        node c;
+        c.mx = x;
+        return c;
+    }
+ 
+    node mymerge(node a, node b) {
+        if(a == _0)
+            return b;
+        if(b == _0)
+            return a;
+        node c;
+        c.mx = max(a.mx, b.mx);
+        return c;
+    }
+ 
+    void build(int v, int l, int r, vector<int> &a) {
+        if(l == r) {
+            tree[v] = a[l];
+            return ;
+        }
+        int m = l + r >> 1;
+        build(v << 1, l, m, a);
+        build(v << 1 | 1, m + 1, r, a);
+        tree[v] = mymerge(tree[v << 1], tree[v << 1 | 1]);
+        return ;
+    }
+ 
+    void upd(int v, int l, int r, int ind, ll val) {
+        if(l == r) {
+            tree[v] = createnode(val);
+            return ;
+        }
+        int m = l + r >> 1;
+        if(ind <= m)
+            upd(v << 1, l, m, ind, val);
+        else
+            upd(v << 1 | 1, m + 1, r, ind, val);
+        tree[v] = mymerge(tree[v << 1], tree[v << 1 | 1]);
+        return ;
+    }
+ 
+    node query(int v, int l, int r, int ql, int qr) {
+        if(ql > qr)
+            return _0;
+        if(l == ql && r == qr)
+            return tree[v];
+        int m = l + r >> 1;
+        return mymerge(query(v << 1, l, m, ql, min(qr, m)), query(v << 1 | 1, m + 1, r, max(ql, m + 1), qr));
+    }
+ 
+    void upd(int ind, int val) {
+        upd(1, 0, n - 1, ind, val);
+    }
+ 
+    int query(int l, int r) {
+        return query(1, 0, n - 1, l, r).mx;
     }
 };
- 
-node tree[nmax * 4];
-node _0;
- 
-node createnode(const int &x) {
-    node c;
-    c.mn = x;
-    return c;
-}
- 
-node mymerge(node a, node b) {
-    if(a == _0)
-        return b;
-    if(b == _0)
-        return a;
-    node c;
-    c.mn = min(a.mn, b.mn);
-    return c;
-}
- 
-void build(int v, int l, int r) {
-    if(l == r) {
-        tree[v] = createnode(a[l]);
-        return ;
-    }
-    int m = l + r >> 1;
-    build(v << 1 | 1, m + 1, r);
-    build(v << 1, l, m);
-    tree[v] = mymerge(tree[v << 1], tree[v << 1 | 1]);
-    return ;
-}
 
-void upd(int v, int l, int r, int ind, ll val) {
-    if(l == r) {
-        tree[v] = createnode(val);
-        return ;
-    }
-    int m = l + r >> 1;
-    if(ind <= m)
-        upd(v << 1, l, m, ind, val);
-    else
-        upd(v << 1 | 1, m + 1, r, ind, val);
-    tree[v] = mymerge(tree[v << 1], tree[v << 1 | 1]);
-    return ;
-}
- 
-node query(int v, int l, int r, int ql, int qr) {
-    if(ql > qr)
-        return _0;
-    //cout << v << " " << l << " " << r << " " << tree[v].sum << " " << lazy[v] << "\n";
-    if(l == ql && r == qr)
-        return tree[v];
-    int m = l + r >> 1;
-    return mymerge(query(v << 1, l, m, ql, min(qr, m)), query(v << 1 | 1, m + 1, r, max(ql, m + 1), qr));
-}
