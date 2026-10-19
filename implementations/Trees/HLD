@@ -41,7 +41,7 @@ struct HLD {
                 swap(graf[v][0], graf[v][i]);
         }
     }
-    void dfshld(int v, int pr) {
+    void dfshld(int v) {
         tin[v] = timer;
         timer++;
         for(int u : graf[v]) {
@@ -49,7 +49,7 @@ struct HLD {
                 head[u] = head[v];
             else
                 head[u] = u;
-            dfshld(u, v);
+            dfshld(u);
         }
     }
     int query(int u, int v) {
@@ -73,6 +73,6 @@ struct HLD {
         dfssz(0, -1);
         timer = 0;
         head[0] = 0;
-        dfshld(0, -1);
+        dfshld(0);
     }
 };
