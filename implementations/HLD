@@ -1,0 +1,78 @@
+struct HLD {
+    int n;
+    vector<vector<int>> graf;
+    vector<int> tin, sz, parent, head, depth;
+    int timer;
+    SegTree segtree;
+    void init(int n_) {
+        n = n_;
+        timer = 0;
+        tin.clear();
+        tin.resize(n);
+        graf.clear();
+        graf.resize(n);
+        sz.clear();
+        sz.resize(n);
+        parent.clear();
+        parent.resize(n);
+        head.clear();
+        head.resize(n);
+        depth.clear();
+        depth.resize(n);
+        segtree.init(n);
+    }
+    void add_edge(int u, int v) {
+        graf[u].pb(v);
+        graf[v].pb(u);
+    }
+    void dfssz(int v, int pr) {
+        sz[v] = 1;
+        parent[v] = pr;
+        if(pr != -1)
+            graf[v].erase(find(all(graf[v]), pr));
+        for(int u : graf[v]) {
+            depth[u] = depth[v] + 1;
+            dfssz(u, v);
+            sz[v] += sz[u];
+        }
+        int m = graf[v].size();
+        for(int i = 1; i < m; i++) {
+            if(sz[graf[v][0]] < sz[graf[v][i]])
+                swap(graf[v][0], graf[v][i]);
+        }
+    }
+    void dfshld(int v, int pr) {
+        tin[v] = timer;
+        timer++;
+        for(int u : graf[v]) {
+            if(u == graf[v][0])
+                head[u] = head[v];
+            else
+                head[u] = u;
+            dfshld(u, v);
+        }
+    }
+    int query(int u, int v) {
+        int res = 0;
+        while(head[u] != head[v]) {
+            if(depth[head[u]] < depth[head[v]]) {
+                swap(u, v);
+            }
+            res = max(res, segtree.query(tin[head[u]], tin[u]));
+            u = parent[head[u]];
+        }
+        if(tin[u] > tin[v])
+            swap(u, v);
+        res = max(res, segtree.query(tin[u], tin[v]));
+        return res;
+    }
+    void upd(int u, int val) {
+        segtree.upd(tin[u], val);
+    }
+    void build() {
+        dfssz(0, -1);
+        timer = 0;
+        head[0] = 0;
+        dfshld(0, -1);
+    }
+};
