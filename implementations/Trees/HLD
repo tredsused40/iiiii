@@ -1,3 +1,6 @@
+//0-indexed HLD
+//When values are in edges push them down to the nodes, and add +1 where commented
+
 struct HLD {
     int n;
     vector<vector<int>> graf;
@@ -63,7 +66,7 @@ struct HLD {
         }
         if(tin[u] > tin[v])
             swap(u, v);
-        res = max(res, segtree.query(tin[u], tin[v]));
+        res = max(res, segtree.query(tin[u], tin[v]));//change to tin[u] + 1 if values are in edges
         return res;
     }
     void upd(int u, int val) {
