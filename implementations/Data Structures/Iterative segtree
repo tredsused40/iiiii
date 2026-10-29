@@ -9,7 +9,7 @@ struct SegTree {
     vector<node> tree;
     node _0;
 
-    void init(int n_) {
+    void init(int n_) {//INDICES OF ELEMENTS MUST BE STRICTLY LESS THAN n
         n = n_;
         tree.clear();
         tree.resize(2 * n, _0);
@@ -33,27 +33,18 @@ struct SegTree {
     }
 
     void upd(int ind, int val) {
-        ind += n;
-        tree[ind] = createnode(val);
-        while(ind > 1) {
-            ind >>= 1;
-            tree[ind] = mymerge(tree[ind << 1], tree[ind << 1 | 1]);
-        }
+        for(ind += n, tree[ind] = createnode(val); ind > 1; ind >>= 1)
+            tree[ind >> 1] = mymerge(tree[ind], tree[ind ^ 1]);
     }
 
-    int query(int l, int r) {
+    node query(int l, int r) {//ANSWERS QUERY ON [l, r]!!!
         node res = _0;
-        r++;
-        l += n;
-        r += n;
-        while(l < r) {
+        for(l += n, r += n + 1; l < r; l >>= 1, r >>= 1) {
             if(l & 1)
                 res = mymerge(tree[l++], res);
             if(r & 1)
-                res = mymerge(tree[--r], res);
-            l >>= 1;
-            r >>= 1;
+                res = mymerge(res, tree[--r]);
         }
-        return res.mx;
+        return res;
     }
 };
