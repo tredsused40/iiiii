@@ -1,7 +1,9 @@
+//instead of build you could use roots.pb(0), making 0 the void node, which points to itself.
+//this change allows to make the tree sparse(any ranges)
 struct PersistentSegTree {
     struct node {
         ll sum = 0;
-        int lc, rc;//left child, right child
+        int lc = 0, rc = 0;//left child, right child
     };
 
     int n, mxnodes, timer;
@@ -11,6 +13,7 @@ struct PersistentSegTree {
         n = n_;
         mxnodes = mxnodes_;
         timer = 0;
+        tree.clear();
         tree.resize(mxnodes);
     }
 
@@ -32,29 +35,25 @@ struct PersistentSegTree {
 
     int build(int tl, int tr, vector<int> &a) {
         if(tl == tr) {
-            tree[timer] = createnode(a[tl], 0, 0);
-            timer++;
-            return timer - 1;
+            tree[++timer] = createnode(a[tl], 0, 0);
+            return timer;
         }
-        int tm = tl + tr >> 1;
-        tree[timer] = mergenodes(build(tl, tm, a), build(tm + 1, tr, a));
-        timer++;
-        return timer - 1;
+        int tm = tl + (tr - tl >> 1);
+        tree[++timer] = mergenodes(build(tl, tm, a), build(tm + 1, tr, a));
+        return timer;
     }
 
     int upd(int v, int tl, int tr, int ind, int val) {
         if(tl == tr) {
-            tree[timer] = createnode(val, 0, 0);
-            timer++;
-            return timer - 1;
+            tree[++timer] = createnode(val, 0, 0);
+            return timer;
         }
-        int tm = tl + tr >> 1;
+        int tm = tl + (tr - tl >> 1);
         if(ind <= tm)
-            tree[timer] = mergenodes(upd(tree[v].lc, tl, tm, ind, val), tree[v].rc);
+            tree[++timer] = mergenodes(upd(tree[v].lc, tl, tm, ind, val), tree[v].rc);
         else
-            tree[timer] = mergenodes(tree[v].lc, upd(tree[v].rc, tm + 1, tr, ind, val));
-        timer++;
-        return timer - 1;
+            tree[++timer] = mergenodes(tree[v].lc, upd(tree[v].rc, tm + 1, tr, ind, val));
+        return timer;
     }
 
     ll query(int v, int tl, int tr, int ql, int qr) {
@@ -62,7 +61,7 @@ struct PersistentSegTree {
             return 0;
         if(tl == ql && tr == qr)
             return tree[v].sum;
-        int tm = tl + tr >> 1;
+        int tm = tl + (tr - tl >> 1);
         return query(tree[v].lc, tl, tm, ql, min(qr, tm)) + query(tree[v].rc, tm + 1, tr, max(ql, tm + 1), qr);
     }
 
@@ -79,8 +78,7 @@ struct PersistentSegTree {
     }
 
     int add_copy(int root) {
-        tree[timer] = tree[root];
-        timer++;
-        return timer - 1;
+        tree[++timer] = tree[root];
+        return timer;
     }
 };
