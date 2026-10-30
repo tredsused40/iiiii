@@ -1,0 +1,86 @@
+struct PersistentSegTree {
+    struct node {
+        ll sum = 0;
+        int lc, rc;//left child, right child
+    };
+
+    int n, mxnodes, timer;
+    vector<node> tree;
+
+    void init(int n_, int mxnodes_) {
+        n = n_;
+        mxnodes = mxnodes_;
+        timer = 0;
+        tree.resize(mxnodes);
+    }
+
+    node createnode(ll sum, int lc, int rc) {
+        node ans;
+        ans.sum = sum;
+        ans.lc = lc;
+        ans.rc = rc;
+        return ans;
+    }
+
+    node mergenodes(int lc, int rc) {
+        node ans;
+        ans.sum = tree[lc].sum + tree[rc].sum;
+        ans.lc = lc;
+        ans.rc = rc;
+        return ans;
+    }
+
+    int build(int tl, int tr, vector<int> &a) {
+        if(tl == tr) {
+            tree[timer] = createnode(a[tl], 0, 0);
+            timer++;
+            return timer - 1;
+        }
+        int tm = tl + tr >> 1;
+        tree[timer] = mergenodes(build(tl, tm, a), build(tm + 1, tr, a));
+        timer++;
+        return timer - 1;
+    }
+
+    int upd(int v, int tl, int tr, int ind, int val) {
+        if(tl == tr) {
+            tree[timer] = createnode(val, 0, 0);
+            timer++;
+            return timer - 1;
+        }
+        int tm = tl + tr >> 1;
+        if(ind <= tm)
+            tree[timer] = mergenodes(upd(tree[v].lc, tl, tm, ind, val), tree[v].rc);
+        else
+            tree[timer] = mergenodes(tree[v].lc, upd(tree[v].rc, tm + 1, tr, ind, val));
+        timer++;
+        return timer - 1;
+    }
+
+    ll query(int v, int tl, int tr, int ql, int qr) {
+        if(ql > qr)
+            return 0;
+        if(tl == ql && tr == qr)
+            return tree[v].sum;
+        int tm = tl + tr >> 1;
+        return query(tree[v].lc, tl, tm, ql, min(qr, tm)) + query(tree[v].rc, tm + 1, tr, max(ql, tm + 1), qr);
+    }
+
+    int build(vector<int> &vc) {
+        return build(0, n - 1, vc);
+    }
+
+    int upd(int root, int ind, int val) {
+        return upd(root, 0, n - 1, ind, val);
+    }
+
+    ll query(int root, int l, int r) {
+        return query(root, 0, n - 1, l, r);
+    }
+
+    int add_copy(int root) {
+        tree[timer] = tree[root];
+        timer++;
+        return timer - 1;
+    }
+};
