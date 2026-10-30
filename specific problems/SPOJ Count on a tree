@@ -1,0 +1,6 @@
+Link: https://www.spoj.com/problems/COT/
+Idea: Persistent segment tree allows us to store for every node of a tree the following regular segment tree:
+Range [l, r] stores amount of nodes with values in range [l, r].
+
+Now, we know that path from u to v can be decomposed into (root, u) + (root, v) - (root, lca) - (root, parent of lca).
+We can do descending on 4 segment trees at the same time, calculating the amount of values in range, comparing them to k, and going to the according son, until we reach l = r.
