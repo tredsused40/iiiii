@@ -1,6 +1,8 @@
+
+//1-indexed nodes so that parent of 1 can be 0
 struct EulerTourLCA {
     int n, timer;
-    vector<int> tin, depth;
+    vector<int> tin, parent, depth;
     vector<vector<int>> graf;
     array<vector<int>, lg> st;
 
@@ -9,9 +11,11 @@ struct EulerTourLCA {
         timer = 0;
         graf.clear();
         tin.clear();
+        parent.clear();
         depth.clear();
         graf.resize(n);
         tin.resize(n);
+        parent.resize(n);
         depth.resize(n, 0);
         for(int i = 0; i < lg; i++) {
             st[i].clear();
@@ -24,8 +28,9 @@ struct EulerTourLCA {
         graf[v].pb(u);
     }
 
-    void dfsorder(int v, int pr = -1) {
+    void dfsorder(int v, int pr = 0) {
         tin[v] = timer;
+        parent[v] = pr;
         st[0][timer] = v;
         timer++;
         for(int u : graf[v]) {
