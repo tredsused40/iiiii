@@ -1,0 +1,42 @@
+
+//0-indexed variables
+//add clause (u or neg v) like add_clause(u, 0, v, 1)
+struct TwoSAT {
+    SCC scc;
+    vector<bool> val;
+    bool good;
+    int n;
+
+    void init(int n_) {
+        n = n_;
+        good = 1;
+        scc.init(2 * n);
+        val.clear();
+        val.resize(n);
+    }
+
+    void add_clause(int u, bool negu, int v, bool negv) {
+        u *= 2;
+        v *= 2;
+        u ^= negu;
+        v ^= negv;
+        scc.add_edge(u ^ 1, v);
+        scc.add_edge(v ^ 1, u);
+    }
+
+    void build() {
+        scc.build();
+        for(int i = 0; i < n; i++) {
+            int cc = scc.color[i * 2];
+            int cneg = scc.color[i * 2 + 1];
+            if(cc == cneg) {
+                good = 0;
+                break;
+            }
+            if(cc < cneg)
+                val[i] = 0;
+            else
+                val[i] = 1;
+        }
+    }
+};
