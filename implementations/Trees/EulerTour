@@ -1,11 +1,12 @@
+//1-indexed nodes so that parent of 1 can be 0
 struct EulerTour {
     int n, timer;
     vector<int> tin, tout, parent;
     vector<vector<int>> graf;
-
+ 
     void init(int n_) {
         n = n_;
-        timer = 0;
+        timer = 1;
         parent.clear();
         graf.clear();
         tin.clear();
@@ -14,14 +15,16 @@ struct EulerTour {
         graf.resize(n);
         tin.resize(n);
         tout.resize(n);
+        tin[0] = 0;
+        tout[0] = n;
     }
-
+ 
     void add_edge(int u, int v) {
         graf[u].pb(v);
         graf[v].pb(u);
     }
-
-    void dfsorder(int v, int pr = -1) {
+ 
+    void dfsorder(int v, int pr = 0) {
         parent[v] = pr;
         tin[v] = timer;
         timer++;
