@@ -1,6 +1,6 @@
 struct EulerTourLCA {
     int n, timer;
-    vector<int> tin, tout, depth;
+    vector<int> tin, depth;
     vector<vector<int>> graf;
     array<vector<int>, lg> st;
 
@@ -9,11 +9,9 @@ struct EulerTourLCA {
         timer = 0;
         graf.clear();
         tin.clear();
-        tout.clear();
         depth.clear();
         graf.resize(n);
         tin.resize(n);
-        tout.resize(n);
         depth.resize(n, 0);
         for(int i = 0; i < lg; i++) {
             st[i].clear();
@@ -38,7 +36,6 @@ struct EulerTourLCA {
                 timer++;
             }
         }
-        tout[v] = timer;
     }
 
     inline int stget(const int &u, const int &v) {
