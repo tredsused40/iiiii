@@ -1,4 +1,4 @@
-//0-indexed scc
+//0-indexed nodes 1-indexed colors scc
 struct SCC {
     vector<vector<int>> graf;
     vector<vector<int>> rgraf;
