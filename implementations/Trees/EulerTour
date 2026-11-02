@@ -1,0 +1,35 @@
+struct EulerTour {
+    int n, timer;
+    vector<int> tin, tout, parent;
+    vector<vector<int>> graf;
+
+    void init(int n_) {
+        n = n_;
+        timer = 0;
+        parent.clear();
+        graf.clear();
+        tin.clear();
+        tout.clear();
+        parent.resize(n);
+        graf.resize(n);
+        tin.resize(n);
+        tout.resize(n);
+    }
+
+    void add_edge(int u, int v) {
+        graf[u].pb(v);
+        graf[v].pb(u);
+    }
+
+    void dfsorder(int v, int pr = -1) {
+        parent[v] = pr;
+        tin[v] = timer;
+        timer++;
+        for(int u : graf[v]) {
+            if(u != pr) {
+                dfsorder(u, v);
+            }
+        }
+        tout[v] = timer;
+    }
+};
