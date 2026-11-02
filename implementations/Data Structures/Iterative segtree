@@ -12,8 +12,8 @@ struct SegTree {
     void init(int n_) {//INDICES OF ELEMENTS MUST BE STRICTLY LESS THAN n
         n = n_;
         tree.clear();
-        tree.resize(2 * n, _0);
         _0.mx = 0;
+        tree.resize(2 * n, _0);
     }
 
     node createnode(const int &x) {
