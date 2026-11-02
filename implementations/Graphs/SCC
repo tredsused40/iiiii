@@ -1,0 +1,57 @@
+//0-indexed scc
+struct SCC {
+    vector<vector<int>> graf;
+    vector<vector<int>> rgraf;
+    vector<int> topsort, used, color;
+    int c, n;
+ 
+    void init(int n_) {
+        n = n_;
+        graf.clear();
+        graf.resize(n);
+        rgraf.clear();
+        rgraf.resize(n);
+        topsort.clear();
+        used.clear();
+        used.resize(n, 0);
+        color.clear();
+        color.resize(n, 0);
+        c = 1;
+    }
+ 
+    void add_edge(int u, int v) {
+        graf[u].pb(v);
+        rgraf[v].pb(u);
+    }
+ 
+    void dfstopsort(int v) {
+        used[v] = 1;
+        for(int u : graf[v]) {
+            if(!used[u])
+                dfstopsort(u);
+        }
+        topsort.pb(v);
+    }
+ 
+    void dfsscc(int v) {
+        color[v] = c;
+        for(int u : rgraf[v]) {
+            if(!color[u])
+                dfsscc(u);
+        }
+    }
+ 
+    void build() {
+        for(int i = 0; i < n; i++) {
+            if(!used[i])
+                dfstopsort(i);
+        }
+        reverse(all(topsort));
+        for(int i : topsort) {
+            if(!color[i]) {
+                dfsscc(i);
+                c++;
+            }
+        }
+    }
+};
