@@ -1,29 +1,34 @@
 //1-indexed fenwick tree
-//indices are 1..n, needs n+1 memory cells
+//if indices are 1..n, it needs n+1 memory cells
+struct FenwickTree {
+    using val_type = int;
+    vector<val_type> tree;
+    int n;
 
-const int nmax = 1000010;
- 
-using val_type = int;
-
-val_type tree[nmax];
-
-val_type query(int ind) {
-    val_type ans = 0;
-    while(ind > 0) {
-        ans += tree[ind];
-        ind &= ind - 1;
+    void init(int n_) {
+        tree.clear();
+        n = n_;
+        tree.resize(n, 0);
     }
-    return ans;
-}
 
-val_type query(int l, int r) {
-    return query(r) - query(l - 1);
-}
-
-void upd(int ind, val_type val, int n) {
-    while(ind <= n) {
-        tree[ind] += val;
-        ind += (ind & -ind);
+    val_type query(int ind) {
+        val_type ans = 0;
+        while(ind > 0) {
+            ans += tree[ind];
+            ind &= ind - 1;
+        }
+        return ans;
     }
-    return ;
-}
+
+    val_type query(int l, int r) {
+        return query(r) - query(l - 1);
+    }
+
+    void upd(int ind, val_type val) {
+        while(ind < n) {
+            tree[ind] += val;
+            ind += (ind & -ind);
+        }
+        return ;
+    }
+};
