@@ -1,52 +1,53 @@
 //1-indexed centroid decomposition
+struct edge {
+    int to;
+    //info
+};
+
+
 int sz[nmax];
-vector<array<int, 2>> graf[nmax];
-int target;
+vector<edge> graf[nmax];
 bool ban[nmax];
-int ans = nmax;
 
 void dfs_sz(int v, int pr) {
     sz[v] = 1;
     for(auto e : graf[v]) {
-        int u = e[0];
+        int u = e.to;
         if(!ban[u] && u != pr) {
             dfs_sz(u, v);
             sz[v] += sz[u];
         }
     }
-    return ;
 }
 
 int csz;
 
 int find_centroid(int v, int pr) {
     for(auto e : graf[v]) {
-        if(!ban[e[0]] && e[0] != pr && sz[e[0]] * 2 > csz)
-            return find_centroid(e[0], v);
+        if(!ban[e.to] && e.to != pr && sz[e.to] * 2 > csz)
+            return find_centroid(e.to, v);
     }
     return v;
 }
 
 void insert_subtree(int v, int pr, info) {
-    //insert vertex
+    //save vertex info
     for(auto e : graf[v]) {
-        int u = e[0];
-        int d = e[1];
+        int u = e.to;
+        //info
         if(!ban[u] && u != pr)
             insert_subtree(u, v, new info);
     }
-    return ;
 }
 
 void calc_subtree(int v, int pr, info) {
     //use cur info and saved info
     for(auto e : graf[v]) {
-        int u = e[0];
-        int d = e[1];
+        int u = e.to;
+        //info
         if(!ban[u] && u != pr)
             calc_subtree(u, v, new info);
     }
-    return ;
 }
 
 void build(int v) {
@@ -55,7 +56,7 @@ void build(int v) {
     int c = find_centroid(v, 0);
     //centroid info
     for(auto e : graf[c]) {
-        int u = e[0];
+        int u = e.to;
         if(!ban[u]) {
             //make sure to include current edge into info
             calc_subtree(u, c, info);
@@ -65,8 +66,7 @@ void build(int v) {
     //clear info
     ban[c] = 1;
     for(auto e : graf[c]) {
-        if(!ban[e[0]])
-            build(e[0]);
+        if(!ban[e.to])
+            build(e.to);
     }
-    return ;
 }
