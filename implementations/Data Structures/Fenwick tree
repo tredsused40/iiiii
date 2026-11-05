@@ -1,5 +1,5 @@
 //1-indexed fenwick tree
-//if indices are 1..n, it needs n+1 memory cells
+//init(n) makes indices up to n inclusive accessible
 struct FenwickTree {
     using val_type = int;
     vector<val_type> tree;
@@ -7,7 +7,7 @@ struct FenwickTree {
 
     void init(int n_) {
         tree.clear();
-        n = n_;
+        n = n_ + 1;
         tree.resize(n, 0);
     }
 
@@ -25,7 +25,7 @@ struct FenwickTree {
     }
 
     void upd(int ind, val_type val) {
-        while(ind < n) {
+        while(ind <= n) {
             tree[ind] += val;
             ind += (ind & -ind);
         }
