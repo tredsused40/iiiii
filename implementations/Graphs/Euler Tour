@@ -1,0 +1,16 @@
+bool used[nmax];
+//it expects edges to have indices to mark them as used
+void dfs(int v) {
+    while(!graf[v].empty()) {
+        auto cur_edge = graf[v].back();
+        graf[v].pop_back();
+        int u = cur_edge[0];
+        int edge_ind = cur_edge[1];
+        if(used[edge_ind])
+            continue;
+        used[edge_ind] = 1;
+        dfs(cur[u]);
+        //add edge from v to u to the back of path
+    }
+    //or add vertex v to the back of path
+}
