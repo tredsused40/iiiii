@@ -29,6 +29,5 @@ struct FenwickTree {
             tree[ind] += val;
             ind += (ind & -ind);
         }
-        return ;
     }
 };
