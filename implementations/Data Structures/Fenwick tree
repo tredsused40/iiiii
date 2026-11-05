@@ -7,8 +7,8 @@ struct FenwickTree {
 
     void init(int n_) {
         tree.clear();
-        n = n_ + 1;
-        tree.resize(n, 0);
+        n = n_;
+        tree.resize(n + 1, 0);
     }
 
     val_type query(int ind) {
