@@ -18,11 +18,8 @@ struct matrix {
         matrix c = *this;
         assert(b.n == c.n && b.m == c.m);
         for(int i = 0; i < n; i++)
-            for(int j = 0; j < m; j++) {
+            for(int j = 0; j < m; j++)
                 c.mat[i][j] += b.mat[i][j];
-                if(c.mat[i][j] >= mod)
-                    c.mat[i][j] -= mod;
-            }
         return c;
     }
     matrix operator *(matrix b) {
@@ -31,11 +28,8 @@ struct matrix {
         c.init(n, b.m);
         for(int i = 0; i < n; i++)
             for(int j = 0; j < b.m; j++)
-                for(int k = 0; k < m; k++) {
-                    c.mat[i][j] += 1ll * (this -> mat[i][k]) * b.mat[k][j] % mod;
-                    if(c.mat[i][j] >= mod)
-                    c.mat[i][j] -= mod;
-                }
+                for(int k = 0; k < m; k++)
+                    c.mat[i][j] += 1ll * (this -> mat[i][k]) * b.mat[k][j];
         return c;
     }
     matrix operator *(int a) {
