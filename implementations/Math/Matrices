@@ -1,0 +1,49 @@
+struct matrix {
+    int n, m;
+    vector<vector<int>> mat;
+    void init(int n_, int m_) {
+        n = n_;
+        m = m_;
+        mat.resize(n);
+        for(int i = 0; i < n; i++)
+            mat[i].resize(m, 0);
+    }
+    void make_identity() {
+        for(int i = 0; i < n; i++) {
+            fill(all(mat[i]), 0);
+            mat[i][i] = 1;
+        }
+    }
+    matrix operator +(matrix b) {
+        matrix c = *this;
+        assert(b.n == c.n && b.m == c.m);
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < m; j++) {
+                c.mat[i][j] += b.mat[i][j];
+                if(c.mat[i][j] >= mod)
+                    c.mat[i][j] -= mod;
+            }
+        return c;
+    }
+    matrix operator *(matrix b) {
+        matrix c;
+        assert(m == b.n);
+        c.init(n, b.m);
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < b.m; j++)
+                for(int k = 0; k < m; k++) {
+                    c.mat[i][j] += 1ll * (this -> mat[i][k]) * b.mat[k][j] % mod;
+                    if(c.mat[i][j] >= mod)
+                    c.mat[i][j] -= mod;
+                }
+        return c;
+    }
+    matrix operator *(int a) {
+        matrix c;
+        c.init(n, m);
+        for(int i = 0; i < n; i++)
+            for(int j = 0; j < m; j++)
+                c.mat[i][j] = (this -> mat[i][j]) * a;
+        return c;
+    }
+};
