@@ -34,7 +34,7 @@ struct SegTree {
  
     void build(int v, int l, int r, vector<int> &a) {
         if(l == r) {
-            tree[v] = a[l];
+            tree[v] = createnode(a[l]);
             return ;
         }
         int m = l + r >> 1;
