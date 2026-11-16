@@ -1,0 +1,55 @@
+
+struct SAM {
+    static constexpr int sz = 26;
+    struct node {
+        int link = 0;
+        int go[sz] = {};
+        int maxlen = 0;
+        bool terminal = 0;
+    };
+    vector<node> nodes;
+    int cur = 0;
+    int prev_suf = 0;
+
+    void init(int n) {
+        cur = 0;
+        nodes.clear();
+        nodes.resize(n * 2 + 2);
+        nodes[0].link = 0;
+        nodes[0].maxlen = 0;
+        cur++;
+        nodes[1] = nodes[0];
+        prev_suf = 1;
+    }
+
+    void append(int c) {
+        cur++;
+        nodes[cur].maxlen = nodes[prev_suf].maxlen + 1;
+        int cnode = prev_suf;
+        prev_suf = cur;
+        while(cnode > 0 && !nodes[cnode].go[c]) {
+            nodes[cnode].go[c] = cur;
+            cnode = nodes[cnode].link;
+        }
+        if(cnode == 0) {
+            nodes[cur].link = 1;
+            return ;
+        }
+        int q = nodes[cnode].go[c];
+        if(nodes[cnode].maxlen + 1 == nodes[q].maxlen) {
+            nodes[cur].link = q;
+            return ;
+        }
+        cur++;
+        nodes[cur] = nodes[q];
+        int clone = cur;
+        nodes[clone].maxlen = nodes[cnode].maxlen + 1;
+        nodes[prev_suf].link = clone;
+        nodes[q].link = clone;
+        while(nodes[cnode].go[c] == q) {
+            nodes[cnode].go[c] = clone;
+            cnode = nodes[cnode].link;
+        }
+    }
+
+};
