@@ -1,30 +1,30 @@
-
 struct SAM {
     static constexpr int sz = 26;
     struct node {
         int link = 0;
         int go[sz] = {};
         int maxlen = 0;
-        bool terminal = 0;
+        ll cnt_paths = 0;
     };
     vector<node> nodes;
     int cur = 0;
     int prev_suf = 0;
+    vector<int> order;
+    vector<int> cnt_cur;
 
     void init(int n) {
-        cur = 0;
         nodes.clear();
-        nodes.resize(n * 2 + 2);
-        nodes[0].link = 0;
-        nodes[0].maxlen = 0;
-        cur++;
-        nodes[1] = nodes[0];
+        nodes.assign(n * 2 + 2, node{});
+        cnt_cur.clear();
+        cnt_cur.resize(n * 2 + 2, 0);
+        cur = 1;
         prev_suf = 1;
     }
 
     void append(int c) {
         cur++;
         nodes[cur].maxlen = nodes[prev_suf].maxlen + 1;
+        cnt_cur[cur] = 1;
         int cnode = prev_suf;
         prev_suf = cur;
         while(cnode > 0 && !nodes[cnode].go[c]) {
@@ -52,4 +52,62 @@ struct SAM {
         }
     }
 
+    void getorder() {
+        order.clear();
+        order.resize(cur + 1);
+        int mx = 0;
+        for(int i = 1; i <= cur; i++)
+            mx = max(mx, nodes[i].maxlen);
+        vector<int> cnt(mx + 1, 0);
+        for(int i = 1; i <= cur; i++)
+            cnt[nodes[i].maxlen]++;
+        for(int i = 1; i <= mx; i++)
+            cnt[i] += cnt[i - 1];
+        for(int i = cur; i > 0; i--)
+            order[cnt[nodes[i].maxlen]--] = i;
+    }
+
+    void getcnt_paths() {
+        for(int i = cur; i > 1; i--) {
+            int v = order[i];
+            for(int j = 0; j < sz; j++) {
+                int u = nodes[v].go[j];
+                if(u)
+                    nodes[v].cnt_paths += nodes[u].cnt_paths;
+            }
+            nodes[v].cnt_paths += cnt_cur[v];
+        }
+    }
+
+    void getcnt_cur() {
+        for(int i = cur; i > 1; i--) {
+            int v = order[i];
+            int l = nodes[v].link;
+            cnt_cur[l] += cnt_cur[v];
+        }
+    }
+
+    string kth_smallest(ll k) {
+        getorder();
+        getcnt_cur();
+        getcnt_paths();
+        string s;
+        int v = 1;
+        while(k > 0) {
+            for(int i = 0; i < sz; i++) {
+                if(!nodes[v].go[i])
+                    continue;
+                int u = nodes[v].go[i];
+                if(nodes[u].cnt_paths < k)
+                    k -= nodes[u].cnt_paths;
+                else {
+                    s += char(i + 'a');
+                    v = u;
+                    break;
+                }
+            }
+            k -= cnt_cur[v];
+        }
+        return s;
+    }
 };
