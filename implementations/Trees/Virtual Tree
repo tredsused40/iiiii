@@ -1,3 +1,4 @@
+//uses EulerTourLCA tree;
 bool cmp(int u, int v) {
     return tree.tin[u] < tree.tin[v];
 }
