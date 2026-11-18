@@ -1,6 +1,6 @@
 Definition of lazy[v]: Value that is to be pushed down to children, it is already applied on v.
 Definition of push(v): Modify lazy[child] and tree[child] with lazy[v], set lazy[v] to 0.
-Definition of apply(v, val): Modifies lazy[v] and child[v] by given val = lazy[u].
+Definition of apply(v, val): Modifies lazy[v] and tree[v] by given val = lazy[parent].
 
 General structure:
 
