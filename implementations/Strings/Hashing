@@ -1,0 +1,35 @@
+struct Hasher {
+    static constexpr int cnt = 1;
+    const int mods[4] = {1080000091, 1079999971, 1199998607, 1199998103};
+    const int bases[4] = {998244853, 1000033, 1000003, 998244353};
+
+    vector<int> h[cnt], keys[cnt];
+
+    template <typename T>
+    void init(T &vc) {
+        int n = vc.size();
+        for(int i = 0; i < cnt; i++) {
+            h[i].resize(n);
+            keys[i].resize(n);
+            keys[i][0] = 1;
+            h[i][0] = vc[0];
+            for(int j = 1; j < n; j++) {
+                keys[i][j] = keys[i][j - 1] * 1ll * bases[i] % mods[i];
+                h[i][j] = (vc[j] + h[i][j - 1] * 1ll * bases[i]) % mods[i];
+            }
+        }
+    }
+
+    array<int, cnt> gethash(int l, int r) {
+        array<int, cnt> ans;
+        for(int i = 0; i < cnt; i++) {
+            ans[i] = h[i][r];
+            if(l) {
+                ans[i] = (ans[i] - h[i][l - 1] * 1ll * keys[i][r - l + 1]) % mods[i];
+                if(ans[i] < 0)
+                    ans[i] += mods[i];
+            }
+        }
+        return ans;
+    }
+};
