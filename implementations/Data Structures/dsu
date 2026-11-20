@@ -6,15 +6,15 @@ struct dsu {
         e.resize(n + 1, -1);
     }
 
-    int findpr(int u) {
+    int getpr(int u) {
         if(e[u] < 0)
             return u;
-        return e[u] = findpr(e[u]);
+        return e[u] = getpr(e[u]);
     }
 
     bool unite(int u, int v) {
-        u = findpr(u);
-        v = findpr(v);
+        u = getpr(u);
+        v = getpr(v);
         if(u == v)
             return 0;
         if(e[u] > e[v])
@@ -25,10 +25,10 @@ struct dsu {
     }
     
     int getsz(int u) {
-        return -e[findpr(u)];
+        return -e[getpr(u)];
     }
     
     bool is_connected(int u, int v) {
-        return findpr(u) == findpr(v);
+        return getpr(u) == getpr(v);
     }
 };
